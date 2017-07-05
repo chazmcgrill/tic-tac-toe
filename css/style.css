@@ -3,24 +3,26 @@ html {
   font-size: 18px;
 }
 
-h1, .game-container {
-  margin: 0 auto;
+.container {
+  margin: 20px auto;
+  text-align: center;
 }
 
-.game-container {
+.board-container {
+  margin: 20px auto;
   width: 300px;
   height: 300px;
 }
 
-h1, .square {
-  text-align: center;
-}
 .square {
   height: 98px;
   width: 98px;
   float: left;
   border: 1px solid black;
-
   font-size: 48px;
   line-height: 98px;
+}
+
+button {
+  padding: 20px;
 }
