@@ -57,24 +57,20 @@ $(document).ready(function() {
     $('#' + sqr).text(val);
     status[sqr] = val;
     playerTurn = turn;
-    checkWin();
+    checkWin(val);
   }
 
   // crude win checker test
-  function checkWin() {
+  function checkWin(symbol) {
     terminal.forEach(function(item) {
-      var xcount = 0, ocount = 0;
+      var count = 0;
       item.forEach(function(val) {
-        if (status[val] === 'X') {
-          xcount += 1;
-        } else if (status[val] === 'O') {
-          ocount += 1;
+        if (status[val] === symbol) {
+          count += 1;
         }
       });
-      if (xcount === 3) {
-        console.log('X WIN');
-      } else if (ocount === 3) {
-        console.log('O WIN');
+      if (count === 3) {
+        console.log(symbol + " WINS");
       }
     });
   }
