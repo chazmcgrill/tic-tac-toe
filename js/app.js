@@ -18,14 +18,31 @@
 
 $(document).ready(function() {
 
-  var moveArray = [];
-      playerTurn = true;
-
-  // terminal states improved
-  var terminal = [['A1','A2','A3'],['B1','B2','B3'],['C1','C2','C3'],['A1','B1','C1'],
-['A2','B2','C2'],['A3','B3','C3'],['A1','B2','C3'],['A3','B2','C1']];
-  // current board status this can be compared to terminal states
-  var status = { A1: '', A2: '', A3: '', B1: '', B2: '', B3: '', C1: '', C2: '', C3: '' };
+  var moveArray = [],
+      playerTurn = true,
+  // terminal states array
+      terminal = [
+        ['A1','A2','A3'],
+        ['B1','B2','B3'],
+        ['C1','C2','C3'],
+        ['A1','B1','C1'],
+        ['A2','B2','C2'],
+        ['A3','B3','C3'],
+        ['A1','B2','C3'],
+        ['A3','B2','C1']
+      ],
+  // current board status
+      status = {
+        A1: '',
+        A2: '',
+        A3: '',
+        B1: '',
+        B2: '',
+        B3: '',
+        C1: '',
+        C2: '',
+        C3: ''
+      };
 
   // buttons for each square
   $('.square').each(function() {
@@ -33,14 +50,13 @@ $(document).ready(function() {
       var val = $(this).text();
       if (playerTurn && val !== 'X' && val !== 'O') {
         var section = $(this).attr('id');
-        // console.log(status);
         update('O', section, false);
         computer();
       }
     });
   });
 
-  // computer turn
+  // computer turn ai
   function computer() {
     $('.square').each(function() {
       if(!$(this).text()) {
@@ -51,27 +67,26 @@ $(document).ready(function() {
     });
   }
 
-  // update the status if comp or player
+  // update the status function
   function update(val, sqr, turn) {
-    // console.log('val = ' + val + ' sqr = ' + sqr + ' turn = ' + turn);
     $('#' + sqr).text(val);
     status[sqr] = val;
     playerTurn = turn;
-    checkWin(val);
+    termCheck(val);
   }
 
-  // crude win checker test
-  function checkWin(symbol) {
+  // terminal states check function
+  function termCheck(symbol) {
     terminal.forEach(function(item) {
       var count = 0;
       item.forEach(function(val) {
         if (status[val] === symbol) {
           count += 1;
         }
+        if (count === 3) {
+          console.log(symbol + " WINS");
+        }
       });
-      if (count === 3) {
-        console.log(symbol + " WINS");
-      }
     });
   }
 
