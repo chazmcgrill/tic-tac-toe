@@ -19,6 +19,7 @@ $(document).ready(function() {
 
   var moveArray = [],
       playerTurn = true,
+      turnCount = 0,
   // terminal states array
       terminal = [
         ['A1','A2','A3'],
@@ -78,13 +79,20 @@ $(document).ready(function() {
   function update(symbol, sqr, turn) {
     $('#' + sqr).text(symbol);
     status[sqr] = symbol;
-    playerTurn = turn;
-    if(termCheck(symbol)) {
-      console.log(symbol + " WINS");
-      playerTurn = null
+    turnCount++;
+    if (termCheck(symbol)) {
+      statusUpdate(symbol, "Wins!");
+    } else if (turnCount === 9) {
+      statusUpdate("It's a", "Draw!");
     } else {
       playerTurn = turn;
     }
+  }
+
+  // status update on screen
+  function statusUpdate(sym, status) {
+    $('.status').text(sym + ' ' + status);
+    playerTurn = null;
   }
 
   // terminal states check function
@@ -95,12 +103,13 @@ $(document).ready(function() {
         if (status[terminal[i][j]] === sym) {
           count++;
         } else {
-          count = 0;
+          break;
         }
         if (count === 3) {
           return true;
         }
       }
+      count = 0;
     }
   }
 
@@ -112,6 +121,7 @@ $(document).ready(function() {
       status[item] = '';
     });
     playerTurn = true;
+    turnCount = 0;
   });
 
 });
