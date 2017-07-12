@@ -2,7 +2,6 @@
 // scoring system 10 for win 5 for future win - for a loss 0 for a ?
 // need to check if can reach terminal state or prevent other player from reaching terminal state.
 
-
 // 1) initial state a players turn
 // 2) successor fuction assesses moves
 // 3) terminal states
@@ -58,36 +57,51 @@ $(document).ready(function() {
 
   // computer turn ai
   function computer() {
-    $('.square').each(function() {
-      if(!$(this).text()) {
-        var section = $(this).attr('id')
-        update('X', section, true);
-        return false;
-      }
-    });
+    if(playerTurn !== null) {
+      $('.square').each(function() {
+        if(!$(this).text()) {
+          var section = $(this).attr('id')
+          update('X', section, true);
+          return false;
+        }
+      });
+    }
   }
 
+  // minimax function
+  // function minimax(node, depth, maxPlayer) {
+  //   // base case depth = 0 or termCheck true
+  //
+  // }
+
   // update the status function
-  function update(val, sqr, turn) {
-    $('#' + sqr).text(val);
-    status[sqr] = val;
+  function update(symbol, sqr, turn) {
+    $('#' + sqr).text(symbol);
+    status[sqr] = symbol;
     playerTurn = turn;
-    termCheck(val);
+    if(termCheck(symbol)) {
+      console.log(symbol + " WINS");
+      playerTurn = null
+    } else {
+      playerTurn = turn;
+    }
   }
 
   // terminal states check function
-  function termCheck(symbol) {
-    terminal.forEach(function(item) {
-      var count = 0;
-      item.forEach(function(val) {
-        if (status[val] === symbol) {
-          count += 1;
+  function termCheck(sym) {
+    var count = 0;
+    for(var i = 0; i < terminal.length; i++) {
+      for(var j = 0; j < terminal[i].length; j++) {
+        if (status[terminal[i][j]] === sym) {
+          count++;
+        } else {
+          count = 0;
         }
         if (count === 3) {
-          console.log(symbol + " WINS");
+          return true;
         }
-      });
-    });
+      }
+    }
   }
 
   // reset button clear board and status obj
