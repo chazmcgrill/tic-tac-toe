@@ -11,6 +11,11 @@
 
 // recursive function for max and min that keep calling each other until depth is 5(point where impossible to beat the AI).
 
+// Requirements
+// You can play against computer
+// You can choose between X and Y
+// Game resets when over so you can play again.
+
 // EXTRA FEATURES
 // scoreboard
 // two player mode
@@ -97,19 +102,16 @@ $(document).ready(function() {
 
   // terminal states check function
   function termCheck(sym) {
-    var count = 0;
     for(var i = 0; i < terminal.length; i++) {
       for(var j = 0; j < terminal[i].length; j++) {
         if (status[terminal[i][j]] === sym) {
-          count++;
+          if (j === 2) {
+            return true;
+          }
         } else {
           break;
         }
-        if (count === 3) {
-          return true;
-        }
       }
-      count = 0;
     }
   }
 
