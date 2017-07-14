@@ -23,6 +23,12 @@ html {
   line-height: 98px;
 }
 
+.status {
+  height: 45px;
+  display: block;
+  font-size: 1.5em;
+}
+
 button {
   padding: 20px;
 }
