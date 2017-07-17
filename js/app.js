@@ -1,15 +1,5 @@
-// minimax algorithm
-// scoring system 10 for win 5 for future win - for a loss 0 for a ?
-// need to check if can reach terminal state or prevent other player from reaching terminal state.
-
-// 1) initial state a players turn
 // 2) successor fuction assesses moves
-// 3) terminal states
 // 4) utility function gives a numeric value to all the terminal states
-
-// chooser max or min
-
-// recursive function for max and min that keep calling each other until depth is 5(point where impossible to beat the AI).
 
 // Requirements
 // You can play against computer
@@ -49,6 +39,9 @@ $(document).ready(function() {
         C3: ''
       };
 
+  // improved status array
+
+
   // buttons for each square
   $('.square').each(function() {
     $(this).click(function() {
@@ -65,12 +58,15 @@ $(document).ready(function() {
   function computer() {
     if(playerTurn !== null) {
       $('.square').each(function() {
-        if(!$(this).text()) {
-          var section = $(this).attr('id')
+        var $this = $(this);
+        // if square is empty call minimax
+        if(!$this.text()) {
+          var section = $this.attr('id')
           update('X', section, true);
           return false;
         }
       });
+      // function minimax(node, depth, maxPlayer)
     }
   }
 
@@ -93,17 +89,29 @@ $(document).ready(function() {
 //           return bestValue
 
   // minimax function
-  // function minimax(node, depth, maxPlayer) {
-  //   // base case depth = 0 or winCheck true
-  //
-  // }
+  function minimax(board, depth, player) {
+
+
+    // // base winCheck true
+    // status[node] = 'X';
+    // if(winCheck('X', )) {
+    //
+    // }
+    // // recursive case check max or min
+    // if (maxPlayer) {
+    //
+    // } else {
+    //
+    // }
+
+  }
 
   // update the status function
   function update(symbol, sqr, turn) {
     $('#' + sqr).text(symbol);
     status[sqr] = symbol;
     turnCount++;
-    if (winCheck(symbol)) {
+    if (winCheck(symbol, status)) {
       statusUpdate(symbol, "Wins!");
     } else if (turnCount === 9) {
       statusUpdate("It's a", "Draw!");
@@ -119,10 +127,10 @@ $(document).ready(function() {
   }
 
   // terminal states check function
-  function winCheck(sym) {
+  function winCheck(symbol, board) {
     for(var i = 0; i < terminal.length; i++) {
       for(var j = 0; j < terminal[i].length; j++) {
-        if (status[terminal[i][j]] === sym) {
+        if (board[terminal[i][j]] === symbol) {
           if (j === 2) {
             return true;
           }
@@ -133,7 +141,10 @@ $(document).ready(function() {
     }
   }
 
-
+  // check if draw
+  function drawCheck(board) {
+    
+  }
 
   //  reset function clear board and status obj
   function reset() {
