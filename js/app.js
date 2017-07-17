@@ -74,9 +74,27 @@ $(document).ready(function() {
     }
   }
 
+// function minimax(node, depth, maximizingPlayer)
+//   if depth = 0 or node is a terminal node
+//     return the heuristic value of node
+//
+//   if maximizingPlayer
+//     bestValue := −∞
+//     for each child of node
+//       v := minimax(child, depth − 1, FALSE)
+//         bestValue := max(bestValue, v)
+//           return bestValue
+//
+//   else  (* minimizing player *)
+//     bestValue := +∞
+//     for each child of node
+//       v := minimax(child, depth − 1, TRUE)
+//         bestValue := min(bestValue, v)
+//           return bestValue
+
   // minimax function
   // function minimax(node, depth, maxPlayer) {
-  //   // base case depth = 0 or termCheck true
+  //   // base case depth = 0 or winCheck true
   //
   // }
 
@@ -85,7 +103,7 @@ $(document).ready(function() {
     $('#' + sqr).text(symbol);
     status[sqr] = symbol;
     turnCount++;
-    if (termCheck(symbol)) {
+    if (winCheck(symbol)) {
       statusUpdate(symbol, "Wins!");
     } else if (turnCount === 9) {
       statusUpdate("It's a", "Draw!");
@@ -101,7 +119,7 @@ $(document).ready(function() {
   }
 
   // terminal states check function
-  function termCheck(sym) {
+  function winCheck(sym) {
     for(var i = 0; i < terminal.length; i++) {
       for(var j = 0; j < terminal[i].length; j++) {
         if (status[terminal[i][j]] === sym) {
@@ -115,8 +133,10 @@ $(document).ready(function() {
     }
   }
 
-  // reset button clear board and status obj
-  $('.reset').click(function() {
+
+
+  //  reset function clear board and status obj
+  function reset() {
     $('.square').text('');
     $('.square').each(function() {
       item = $(this).attr('id');
@@ -124,6 +144,11 @@ $(document).ready(function() {
     });
     playerTurn = true;
     turnCount = 0;
+  }
+
+  // reset button calls reset function
+  $('.reset').click(function() {
+    reset();
   });
 
 });
