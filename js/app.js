@@ -15,31 +15,18 @@ $(document).ready(function() {
   var moveArray = [],
       playerTurn = true,
       turnCount = 0,
-  // terminal states array
-      terminal = [
-        ['A1','A2','A3'],
-        ['B1','B2','B3'],
-        ['C1','C2','C3'],
-        ['A1','B1','C1'],
-        ['A2','B2','C2'],
-        ['A3','B3','C3'],
-        ['A1','B2','C3'],
-        ['A3','B2','C1']
+  // improved terminal & status array
+      terminal2 = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6]
       ],
-  // current board status
-      status = {
-        A1: '',
-        A2: '',
-        A3: '',
-        B1: '',
-        B2: '',
-        B3: '',
-        C1: '',
-        C2: '',
-        C3: ''
-      };
-
-  // improved status array
+      status2 = [0,0,0,0,0,0,0,0,0];
 
 
   // buttons for each square
@@ -90,8 +77,6 @@ $(document).ready(function() {
 
   // minimax function
   function minimax(board, depth, player) {
-
-
     // // base winCheck true
     // status[node] = 'X';
     // if(winCheck('X', )) {
@@ -103,17 +88,16 @@ $(document).ready(function() {
     // } else {
     //
     // }
-
   }
 
+// update('O', section, false);
   // update the status function
   function update(symbol, sqr, turn) {
     $('#' + sqr).text(symbol);
-    status[sqr] = symbol;
-    turnCount++;
-    if (winCheck(symbol, status)) {
+    status2[sqr] = symbol;
+    if (winCheck(symbol, status2)) {
       statusUpdate(symbol, "Wins!");
-    } else if (turnCount === 9) {
+    } else if (drawCheck(status2)) {
       statusUpdate("It's a", "Draw!");
     } else {
       playerTurn = turn;
@@ -127,12 +111,14 @@ $(document).ready(function() {
   }
 
   // terminal states check function
+  // loops through each terminal state and checks if they match
+  // the specified board status
   function winCheck(symbol, board) {
-    for(var i = 0; i < terminal.length; i++) {
-      for(var j = 0; j < terminal[i].length; j++) {
-        if (board[terminal[i][j]] === symbol) {
+    for(var i = 0; i < 8; i++) {
+      for(var j = 0; j < 3; j++) {
+        if (board[terminal2[i][j]] === symbol) {
           if (j === 2) {
-            return true;
+            return true
           }
         } else {
           break;
@@ -143,7 +129,12 @@ $(document).ready(function() {
 
   // check if draw
   function drawCheck(board) {
-    
+    for(var i = 0; i < 9; i++) {
+      if (board[i] === 0) {
+        return false;
+      }
+    }
+    return true;
   }
 
   //  reset function clear board and status obj
@@ -151,10 +142,9 @@ $(document).ready(function() {
     $('.square').text('');
     $('.square').each(function() {
       item = $(this).attr('id');
-      status[item] = '';
+      status2[item] = 0;
     });
     playerTurn = true;
-    turnCount = 0;
   }
 
   // reset button calls reset function
