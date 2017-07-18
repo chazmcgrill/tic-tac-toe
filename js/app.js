@@ -43,37 +43,51 @@ $(document).ready(function() {
   // computer turn ai
   function computer() {
     if(playerTurn !== null) {
-      $('.square').each(function() {
-        var $this = $(this);
-        // if square is empty call minimax
-        if(!$this.text()) {
-          var section = $this.attr('id')
-          update('X', section, true);
-          return false;
-        }
-      });
-      // minimax(status, 0, computerPlayer);
+      // $('.square').each(function() {
+      //   var $this = $(this);
+      //   // if square is empty call minimax
+      //   if(!$this.text()) {
+      //     var section = $this.attr('id')
+      //     update('X', section, true);
+      //     return false;
+      //   }
+      // });
+      var index = minimax(status, 0, 'X');
+      update('X', index, true);
     }
   }
 
   // minimax function
   function minimax(board, depth, player) {
-    // BASE CASES
-    // if (terminal state)
-    if (winCheck(board, player)) {
-      return 10;
-    // else if (draw state)
+    console.log(board);
+
+    // node starts at depth 0 and finishes at either
+    // a draw or
+    // a terminal state win or loss determined by max/min state
+    if (winCheck(player, board)) {
+      return 10 or -10;
     } else if (drawCheck(board)) {
       return 0;
     }
 
-    // RECURSIVE CASES
+    // loop through each node
+
     // maximising player
 
     // minimising player
 
+    // basic logic to place peices
+    for (var i = 0; i < 9; i++) {
+      if (board[i] === 0) {
+        return i;
+      }
+    }
 
-    // if depth equals 0 return max value and index.
+    // base case loop finished and depth at 0
+    if (depth === 0) {
+      return maxValue and index;
+    }
+
   }
 
 // update('O', section, false);
@@ -81,7 +95,6 @@ $(document).ready(function() {
   function update(symbol, sqr, turn) {
     $('#' + sqr).text(symbol);
     status[sqr] = symbol;
-    console.log(status);
     if (winCheck(symbol, status)) {
       statusUpdate(symbol, "Wins!");
     } else if (drawCheck(status)) {
