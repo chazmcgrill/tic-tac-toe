@@ -14,9 +14,8 @@ $(document).ready(function() {
 
   var moveArray = [],
       playerTurn = true,
-      turnCount = 0,
   // improved terminal & status array
-      terminal2 = [
+      termStates = [
         [0,1,2],
         [3,4,5],
         [6,7,8],
@@ -26,7 +25,7 @@ $(document).ready(function() {
         [0,4,8],
         [2,4,6]
       ],
-      status2 = [0,0,0,0,0,0,0,0,0];
+      status = [0,0,0,0,0,0,0,0,0];
 
 
   // buttons for each square
@@ -53,51 +52,39 @@ $(document).ready(function() {
           return false;
         }
       });
-      // function minimax(node, depth, maxPlayer)
+      // minimax(status, 0, computerPlayer);
     }
   }
 
-// function minimax(node, depth, maximizingPlayer)
-//   if depth = 0 or node is a terminal node
-//     return the heuristic value of node
-//
-//   if maximizingPlayer
-//     bestValue := −∞
-//     for each child of node
-//       v := minimax(child, depth − 1, FALSE)
-//         bestValue := max(bestValue, v)
-//           return bestValue
-//
-//   else  (* minimizing player *)
-//     bestValue := +∞
-//     for each child of node
-//       v := minimax(child, depth − 1, TRUE)
-//         bestValue := min(bestValue, v)
-//           return bestValue
-
   // minimax function
   function minimax(board, depth, player) {
-    // // base winCheck true
-    // status[node] = 'X';
-    // if(winCheck('X', )) {
-    //
-    // }
-    // // recursive case check max or min
-    // if (maxPlayer) {
-    //
-    // } else {
-    //
-    // }
+    // BASE CASES
+    // if (terminal state)
+    if (winCheck(board, player)) {
+      return 10;
+    // else if (draw state)
+    } else if (drawCheck(board)) {
+      return 0;
+    }
+
+    // RECURSIVE CASES
+    // maximising player
+
+    // minimising player
+
+
+    // if depth equals 0 return max value and index.
   }
 
 // update('O', section, false);
   // update the status function
   function update(symbol, sqr, turn) {
     $('#' + sqr).text(symbol);
-    status2[sqr] = symbol;
-    if (winCheck(symbol, status2)) {
+    status[sqr] = symbol;
+    console.log(status);
+    if (winCheck(symbol, status)) {
       statusUpdate(symbol, "Wins!");
-    } else if (drawCheck(status2)) {
+    } else if (drawCheck(status)) {
       statusUpdate("It's a", "Draw!");
     } else {
       playerTurn = turn;
@@ -116,7 +103,7 @@ $(document).ready(function() {
   function winCheck(symbol, board) {
     for(var i = 0; i < 8; i++) {
       for(var j = 0; j < 3; j++) {
-        if (board[terminal2[i][j]] === symbol) {
+        if (board[termStates[i][j]] === symbol) {
           if (j === 2) {
             return true
           }
@@ -140,9 +127,10 @@ $(document).ready(function() {
   //  reset function clear board and status obj
   function reset() {
     $('.square').text('');
+    $('.status').text('');
     $('.square').each(function() {
       item = $(this).attr('id');
-      status2[item] = 0;
+      status[item] = 0;
     });
     playerTurn = true;
   }
