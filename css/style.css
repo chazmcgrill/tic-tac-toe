@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css?family=Comfortaa:700');
+
 html {
-  font-family: sans-serif;
+  font-family: 'Comfortaa', cursive;
   font-size: 18px;
 }
 
@@ -15,10 +17,10 @@ html {
 }
 
 .square {
-  height: 98px;
-  width: 98px;
+  height: 91px;
+  width: 91px;
   float: left;
-  border: 1px solid black;
+  border: 3px solid black;
   font-size: 48px;
   line-height: 98px;
 }
