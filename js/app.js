@@ -14,7 +14,6 @@ $(document).ready(function() {
 
   var moveArray = [],
       playerTurn = true,
-  // improved terminal & status array
       termStates = [
         [0,1,2],
         [3,4,5],
@@ -26,6 +25,9 @@ $(document).ready(function() {
         [2,4,6]
       ],
       status = [0,0,0,0,0,0,0,0,0];
+      humanToken = 'O',
+      aiToken = 'X',
+      fc = 0;
 
 
   // buttons for each square
@@ -40,59 +42,20 @@ $(document).ready(function() {
     });
   });
 
-  // computer turn ai
+  // computer turn calls minimax algorithm
   function computer() {
     if(playerTurn !== null) {
-      // $('.square').each(function() {
-      //   var $this = $(this);
-      //   // if square is empty call minimax
-      //   if(!$this.text()) {
-      //     var section = $this.attr('id')
-      //     update('X', section, true);
-      //     return false;
-      //   }
-      // });
-      var index = minimax(status, 0, 'X');
-      update('X', index, true);
+      var index = minimax(status, true);
+      console.log('fc = ' + fc);
+      console.log(index);
+      update('X', index.index, true);
     }
   }
 
-  // minimax function
-  function minimax(board, depth, player) {
-    console.log(board);
 
-    // node starts at depth 0 and finishes at either
-    // a draw or
-    // a terminal state win or loss determined by max/min state
-    if (winCheck(player, board)) {
-      return 10 or -10;
-    } else if (drawCheck(board)) {
-      return 0;
-    }
-
-    // loop through each node
-
-    // maximising player
-
-    // minimising player
-
-    // basic logic to place peices
-    for (var i = 0; i < 9; i++) {
-      if (board[i] === 0) {
-        return i;
-      }
-    }
-
-    // base case loop finished and depth at 0
-    if (depth === 0) {
-      return maxValue and index;
-    }
-
-  }
-
-// update('O', section, false);
   // update the status function
   function update(symbol, sqr, turn) {
+    // console.log('in update function');
     $('#' + sqr).text(symbol);
     status[sqr] = symbol;
     if (winCheck(symbol, status)) {
@@ -101,6 +64,7 @@ $(document).ready(function() {
       statusUpdate("It's a", "Draw!");
     } else {
       playerTurn = turn;
+      // computer();
     }
   }
 
@@ -152,5 +116,80 @@ $(document).ready(function() {
   $('.reset').click(function() {
     reset();
   });
+
+
+  // minimax algorithm function
+  function minimax(board, player) {
+    fc++;
+    // console.log('board = ' + board + ' / maxPlayer = ' + maxPlayer);
+
+    // node starts at depth 0 and finishes at either
+    // a draw or a terminal state win or loss determined by max/min state
+    if (winCheck(aiToken, board)) {
+      // console.log('max win detected');
+      return { score: 10 };
+    } else if (winCheck(humanToken, board)) {
+      // console.log('min win detected');
+      return { score: -10 };
+    } else if (drawCheck(board)) {
+      // console.log('draw detected');
+      return { score: 0 };
+    }
+
+    // variables to catch max value and index
+    var moves = [];
+
+    // maxPlayer ? player = 'X' : player = 'O';
+    // console.log('player = ' + player);
+
+    // loop through each empty node
+    for (var i = 0; i < 9; i++) {
+      if (board[i] === 0) {
+
+        var move = {};
+        tempBoard = board.slice();
+
+        move.index = i;
+        tempBoard[i] = player;
+        // console.log(tempBoard);
+
+        if (player === aiToken) {
+          var result = minimax(tempBoard, humanToken);
+          move.score = result.score;
+        } else {
+          var result = minimax(tempBoard, aiToken);
+          move.score = result.score;
+        }
+
+        moves.push(move);
+      }
+
+    }
+
+    console.log(moves);
+
+    var bestMove;
+    if (player === aiToken) {
+      var bestScore = -Infinity;
+      for(var i = 0; i < moves.length; i++) {
+        if (moves[i].score > bestScore) {
+          bestScore = moves[i].score;
+          bestMove = i;
+        }
+      }
+    } else {
+      var bestScore = Infinity;
+      for(var i = 0; i < moves.length; i++) {
+        if (moves[i].score < bestScore) {
+          bestScore = moves[i].score;
+          bestMove = i;
+        }
+      }
+    }
+
+    return moves[bestMove];
+
+  }
+
 
 });
