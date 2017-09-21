@@ -27,9 +27,10 @@ $('.square').click(function(event) {
   squareClick(event.target.id);
 });
 
-/* game initiator function removes message display creates
-empty array with 9 elements containing index numbers clears
-cells of text, styling and adds event listener */
+/* game initiator function removes message display
+creates empty array with 9 elements containing index
+numbers clears cells of text, styling and adds event
+listener */
 function gameInit() {
   board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   $('.square').text('');
@@ -66,7 +67,7 @@ function gameStatus(message) {
   $('.status').text(message);
 }
 
-/* function to check winning move */
+/* function that checks for win state */
 function winCheck(currentBoard, token) {
   for(var i = 0; i < 8; i++) {
     for(var j = 0; j < 3; j++) {
@@ -79,7 +80,7 @@ function winCheck(currentBoard, token) {
   }
 }
 
-/* function that checks for draw */
+/* function that checks for draw state */
 function drawCheck() {
   if (!availableMoves(board).length) {
     gameStatus('It\'s A Draw!');
@@ -96,7 +97,7 @@ function availableMoves(testBoard) {
   return arr;
 }
 
-/* function that returns best move from minimax */
+/* Ai move function returns best move from minimax */
 function aiMove() {
   return minimax(board, aiToken).index;
 }
@@ -105,7 +106,7 @@ function aiMove() {
 function minimax(tempBoard, player) {
   var available = availableMoves(tempBoard);
 
-  /* Base Cases return value if terminal state is found */
+  /* Base Cases return value if terminal state found */
   if (winCheck(tempBoard, humanToken)) {
     return { score: -10 };
   } else if (winCheck(tempBoard, aiToken)) {
@@ -114,12 +115,13 @@ function minimax(tempBoard, player) {
     return { score: 0 };
   }
 
-  /* Cycle through available spots on the board */
+  /* Cycles through available spots on the board.
+  Creates move object and calls minimax function
+  on each square recursively */
   var moves = [];
+
   for (var i = 0; i < available.length; i++) {
 
-    /* Create move object and call minimax function
-    on each square recursively */
     var move = {};
     move.index = tempBoard[available[i]];
     tempBoard[available[i]] = player;
@@ -137,8 +139,8 @@ function minimax(tempBoard, player) {
     moves.push(move);
   }
 
-  /* Evaluate returning values from function calls
-  and finaly return best score */
+  /* Evaluates returning values from function calls
+  and ends by returning the best score */
   var bestMove, bestScore;
   if (player === aiToken) {
     bestScore = -Infinity;

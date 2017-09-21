@@ -15,19 +15,6 @@
 		"oAP": "\/.gitignore",
 		"oF": 0
 		},
-	"\/css\/sass\/main.scss": {
-		"aP": 0,
-		"bl": 0,
-		"dP": 10,
-		"dS": 0,
-		"ft": 4,
-		"ma": 0,
-		"oA": 0,
-		"oAP": "\/css\/sass\/main.css",
-		"oF": 0,
-		"oS": 0,
-		"uL": 1
-		},
 	"\/css\/style.css": {
 		"aP": 1,
 		"bl": 0,
@@ -37,6 +24,19 @@
 		"oAP": "\/css\/style-min.css",
 		"oF": 0,
 		"oS": 3
+		},
+	"\/css\/style.sass": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 2,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "\/css\/style.css",
+		"oF": 0,
+		"oS": 0,
+		"uL": 1
 		},
 	"\/index.html": {
 		"ft": 8192,
