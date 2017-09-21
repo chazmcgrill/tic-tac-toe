@@ -54,26 +54,6 @@
 		"sC": 3,
 		"tS": 0
 		},
-	"\/js\/app-v2-min.js": {
-		"ft": 64,
-		"ma": 0,
-		"mi": 1,
-		"oA": 0,
-		"oAP": "\/js\/app-v2-min-min.js",
-		"oF": 0,
-		"sC": 3,
-		"tS": 0
-		},
-	"\/js\/app-v2.js": {
-		"ft": 64,
-		"ma": 0,
-		"mi": 1,
-		"oA": 0,
-		"oAP": "\/js\/app-v2-min.js",
-		"oF": 0,
-		"sC": 3,
-		"tS": 0
-		},
 	"\/js\/app.js": {
 		"ft": 64,
 		"ma": 0,

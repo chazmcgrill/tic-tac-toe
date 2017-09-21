@@ -1,6 +1,3 @@
-// 2) successor fuction assesses moves
-// 4) utility function gives a numeric value to all the terminal states
-
 // Requirements
 // You can play against computer
 // You can choose between X and Y
@@ -10,186 +7,159 @@
 // scoreboard
 // two player mode
 
-$(document).ready(function() {
+var board;
+const termStates = [
+  [0,1,2],
+  [3,4,5],
+  [6,7,8],
+  [0,3,6],
+  [1,4,7],
+  [2,5,8],
+  [0,4,8],
+  [2,4,6]
+];
+var humanToken = 'O';
+var aiToken = 'X';
+var gameOver = false;
 
-  var moveArray = [],
-      playerTurn = true,
-      termStates = [
-        [0,1,2],
-        [3,4,5],
-        [6,7,8],
-        [0,3,6],
-        [1,4,7],
-        [2,5,8],
-        [0,4,8],
-        [2,4,6]
-      ],
-      status = [0,0,0,0,0,0,0,0,0];
-      humanToken = 'O',
-      aiToken = 'X',
-      fc = 0;
+gameInit();
 
+/* click events for the squares */
+$('.square').click(function(event) {
+  squareClick(event.target.id);
+});
 
-  // buttons for each square
-  $('.square').each(function() {
-    $(this).click(function() {
-      var val = $(this).text();
-      if (playerTurn && val !== 'X' && val !== 'O') {
-        var section = $(this).attr('id');
-        update('O', section, false);
-        computer();
-      }
-    });
-  });
+/* game initiator function removes message display creates
+empty array with 9 elements containing index numbers clears
+cells of text, styling and adds event listener */
+function gameInit() {
+  board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  $('.square').text('');
+  gameStatus('');
+  gameOver = false;
+}
 
-  // computer turn calls minimax algorithm
-  function computer() {
-    if(playerTurn !== null) {
-      var index = minimax(status, true);
-      console.log('fc = ' + fc);
-      console.log(index);
-      update('X', index.index, true);
+/* function for cell click events checks if cell is
+vacant if so plays human player move following this it
+takes computer move if game not a tie */
+function squareClick(move) {
+  if (typeof board[move] === 'number' && !gameOver) {
+    updateBoard(humanToken, move, 'human');
+    if(!drawCheck() && !gameOver) {
+      updateBoard(aiToken, aiMove(), 'ai');
     }
   }
+  console.log(board);
+}
 
-
-  // update the status function
-  function update(symbol, sqr, turn) {
-    // console.log('in update function');
-    $('#' + sqr).text(symbol);
-    status[sqr] = symbol;
-    if (winCheck(symbol, status)) {
-      statusUpdate(symbol, "Wins!");
-    } else if (drawCheck(status)) {
-      statusUpdate("It's a", "Draw!");
-    } else {
-      playerTurn = turn;
-      // computer();
-    }
+/* update function adds player token to origBoard array
+and cells on board. It checks if the turn has a winning
+move and if so call the gameOver function */
+function updateBoard(token, index, player) {
+  $('#' + index).text(token);
+  board[index] = token;
+  if (winCheck(board, token)) {
+    player === 'human' ? gameStatus('You Win!') : gameStatus('You Lose!');
+    gameOver = true;
   }
+}
 
-  // status update on screen
-  function statusUpdate(sym, status) {
-    $('.status').text(sym + ' ' + status);
-    playerTurn = null;
-  }
+/* game status function */
+function gameStatus(message) {
+  $('.status').text(message);
+}
 
-  // terminal states check function
-  // loops through each terminal state and checks if they match
-  // the specified board status
-  function winCheck(symbol, board) {
-    for(var i = 0; i < 8; i++) {
-      for(var j = 0; j < 3; j++) {
-        if (board[termStates[i][j]] === symbol) {
-          if (j === 2) {
-            return true
-          }
-        } else {
-          break;
-        }
+/* function to check winning move */
+function winCheck(currentBoard, token) {
+  for(var i = 0; i < 8; i++) {
+    for(var j = 0; j < 3; j++) {
+      if (currentBoard[termStates[i][j]] === token) {
+        if (j === 2) return true;
+      } else {
+        break;
       }
     }
   }
+}
 
-  // check if draw
-  function drawCheck(board) {
-    for(var i = 0; i < 9; i++) {
-      if (board[i] === 0) {
-        return false;
-      }
-    }
+/* function that checks for draw */
+function drawCheck() {
+  // console.log(availableMoves(board));
+  if (!availableMoves(board).length) {
+    gameStatus('It\'s A Draw!');
     return true;
   }
+}
 
-  //  reset function clear board and status obj
-  function reset() {
-    $('.square').text('');
-    $('.status').text('');
-    $('.square').each(function() {
-      item = $(this).attr('id');
-      status[item] = 0;
-    });
-    playerTurn = true;
+/* function that returns array of available moves */
+function availableMoves(testBoard) {
+  var arr = [];
+  for(var i = 0; i < testBoard.length; i++) {
+    if (typeof testBoard[i] === 'number') arr.push(testBoard[i]);
+  }
+  return arr;
+}
+
+/* function that returns best move from minimax */
+function aiMove() {
+  return minimax(board, aiToken).index;
+}
+
+/* MINIMAX algorithm
+1. return a value if a terminal state is found (+10, 0, -10)
+2. go through available spots on the board
+3. call the minimax function on each available spot (recursion)
+4. evaluate returning values from function calls
+5. and return the best value */
+
+function minimax(tempBoard, player) {
+  var available = availableMoves(tempBoard);
+
+  if (winCheck(tempBoard, humanToken)) {
+    return { score: -10 };
+  } else if (winCheck(tempBoard, aiToken)) {
+    return { score: 10 };
+  } else if (!available.length) {
+    return { score: 0 };
   }
 
-  // reset button calls reset function
-  $('.reset').click(function() {
-    reset();
-  });
+  var moves = [];
+  for (var i = 0; i < available.length; i++) {
 
+    var move = {};
+    move.index = tempBoard[available[i]];
+    tempBoard[available[i]] = player;
 
-  // minimax algorithm function
-  function minimax(board, player) {
-    fc++;
-    // console.log('board = ' + board + ' / maxPlayer = ' + maxPlayer);
-
-    // node starts at depth 0 and finishes at either
-    // a draw or a terminal state win or loss determined by max/min state
-    if (winCheck(aiToken, board)) {
-      // console.log('max win detected');
-      return { score: 10 };
-    } else if (winCheck(humanToken, board)) {
-      // console.log('min win detected');
-      return { score: -10 };
-    } else if (drawCheck(board)) {
-      // console.log('draw detected');
-      return { score: 0 };
-    }
-
-    // variables to catch max value and index
-    var moves = [];
-
-    // maxPlayer ? player = 'X' : player = 'O';
-    // console.log('player = ' + player);
-
-    // loop through each empty node
-    for (var i = 0; i < 9; i++) {
-      if (board[i] === 0) {
-
-        var move = {};
-        tempBoard = board.slice();
-
-        move.index = i;
-        tempBoard[i] = player;
-        // console.log(tempBoard);
-
-        if (player === aiToken) {
-          var result = minimax(tempBoard, humanToken);
-          move.score = result.score;
-        } else {
-          var result = minimax(tempBoard, aiToken);
-          move.score = result.score;
-        }
-
-        moves.push(move);
-      }
-
-    }
-
-    console.log(moves);
-
-    var bestMove;
     if (player === aiToken) {
-      var bestScore = -Infinity;
-      for(var i = 0; i < moves.length; i++) {
-        if (moves[i].score > bestScore) {
-          bestScore = moves[i].score;
-          bestMove = i;
-        }
-      }
+      var result = minimax(tempBoard, humanToken);
+      move.score = result.score;
     } else {
-      var bestScore = Infinity;
-      for(var i = 0; i < moves.length; i++) {
-        if (moves[i].score < bestScore) {
-          bestScore = moves[i].score;
-          bestMove = i;
-        }
-      }
+      var result = minimax(tempBoard, aiToken);
+      move.score = result.score;
     }
 
-    return moves[bestMove];
-
+    tempBoard[available[i]] = move.index
+    moves.push(move);
   }
 
+  var bestMove;
+  if (player === aiToken) {
+    var bestScore = -Infinity;
+    for(var i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  } else {
+    var bestScore = Infinity;
+    for(var i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  }
 
-});
+  return moves[bestMove];
+}
