@@ -1,13 +1,14 @@
 // Requirements
-// You can play against computer
-// You can choose between X and Y
-// Game resets when over so you can play again.
+// You can choose between X and O
 
 // EXTRA FEATURES
 // scoreboard
 // two player mode
 
-var board;
+var gameOver = false,
+    humanToken = 'O',
+    aiToken = 'X',
+    board;
 const termStates = [
   [0,1,2],
   [3,4,5],
@@ -18,9 +19,6 @@ const termStates = [
   [0,4,8],
   [2,4,6]
 ];
-var humanToken = 'O';
-var aiToken = 'X';
-var gameOver = false;
 
 gameInit();
 
@@ -49,7 +47,6 @@ function squareClick(move) {
       updateBoard(aiToken, aiMove(), 'ai');
     }
   }
-  console.log(board);
 }
 
 /* update function adds player token to origBoard array
@@ -84,7 +81,6 @@ function winCheck(currentBoard, token) {
 
 /* function that checks for draw */
 function drawCheck() {
-  // console.log(availableMoves(board));
   if (!availableMoves(board).length) {
     gameStatus('It\'s A Draw!');
     return true;
@@ -105,16 +101,11 @@ function aiMove() {
   return minimax(board, aiToken).index;
 }
 
-/* MINIMAX algorithm
-1. return a value if a terminal state is found (+10, 0, -10)
-2. go through available spots on the board
-3. call the minimax function on each available spot (recursion)
-4. evaluate returning values from function calls
-5. and return the best value */
-
+/* Minimax algorithm function for unbeatable ai */
 function minimax(tempBoard, player) {
   var available = availableMoves(tempBoard);
 
+  /* Base Cases return value if terminal state is found */
   if (winCheck(tempBoard, humanToken)) {
     return { score: -10 };
   } else if (winCheck(tempBoard, aiToken)) {
@@ -123,18 +114,22 @@ function minimax(tempBoard, player) {
     return { score: 0 };
   }
 
+  /* Cycle through available spots on the board */
   var moves = [];
   for (var i = 0; i < available.length; i++) {
 
+    /* Create move object and call minimax function
+    on each square recursively */
     var move = {};
     move.index = tempBoard[available[i]];
     tempBoard[available[i]] = player;
 
+    var result;
     if (player === aiToken) {
-      var result = minimax(tempBoard, humanToken);
+      result = minimax(tempBoard, humanToken);
       move.score = result.score;
     } else {
-      var result = minimax(tempBoard, aiToken);
+      result = minimax(tempBoard, aiToken);
       move.score = result.score;
     }
 
@@ -142,21 +137,23 @@ function minimax(tempBoard, player) {
     moves.push(move);
   }
 
-  var bestMove;
+  /* Evaluate returning values from function calls
+  and finaly return best score */
+  var bestMove, bestScore;
   if (player === aiToken) {
-    var bestScore = -Infinity;
-    for(var i = 0; i < moves.length; i++) {
-      if (moves[i].score > bestScore) {
-        bestScore = moves[i].score;
-        bestMove = i;
+    bestScore = -Infinity;
+    for(var j = 0; j < moves.length; j++) {
+      if (moves[j].score > bestScore) {
+        bestScore = moves[j].score;
+        bestMove = j;
       }
     }
   } else {
-    var bestScore = Infinity;
-    for(var i = 0; i < moves.length; i++) {
-      if (moves[i].score < bestScore) {
-        bestScore = moves[i].score;
-        bestMove = i;
+    bestScore = Infinity;
+    for(var k = 0; k < moves.length; k++) {
+      if (moves[k].score < bestScore) {
+        bestScore = moves[k].score;
+        bestMove = k;
       }
     }
   }
