@@ -13,9 +13,21 @@ html, button
   font-size: 18px
   color: $light
 
+.site
+  display: flex
+  min-height: 100vh
+  flex-direction: column
+  justify-content: space-between
+
+h1
+  color: $dark
+
 .container
   margin: 70px auto
   text-align: center
+
+  @media (max-width: 480px)
+    margin-top: 0
 
 .board-container
   margin: 20px auto
@@ -34,15 +46,34 @@ html, button
   color: $dark
   border-radius: 4px
 
+.chooser
+  position: absolute
+  background: $blue
+  height: 300px
+  width: 300px
+  border-radius: 10px
+
+  h3
+    padding-top: 50px
+
+.chooser-button
+  font-size: 3rem
+  display: inline-block
+  margin: 20px 30px
+
+  &:hover
+    color: $dark
+
 .status
   height: 45px
   display: block
   font-size: 1.5em
 
-.square, button
+.square, button, .chooser-button
   cursor: pointer
 
 button
+  display: none
   border: 4px solid $light
   background: $grey
   border-radius: 4px
@@ -52,3 +83,32 @@ button
   &:hover
     background: $light
     color: $grey
+
+.handle
+  display: none
+
+.footer
+  display: flex
+  justify-content: space-around
+  height: 70px
+  text-align: center
+
+  .icons
+    width: 150px
+    margin: 0 auto 10px auto
+    display: flex
+    justify-content: space-between
+
+  i
+    font-size: 90%
+
+  p, i, a
+    color: $dark
+
+  p
+    font-size: 10px
+  a
+    text-decoration: none
+
+  i:hover, a:hover
+    color: $light

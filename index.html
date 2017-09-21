@@ -6,13 +6,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://use.fontawesome.com/d891ebaa12.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="site">
   <div class="container">
     <h1>Tic-Tac-Toe</h1>
     <div class="board-container">
+      <div class="chooser">
+        <h3>choose your token</h3>
+        <div class="chooser-button" id="X">X</div>
+        <div class="chooser-button" id="O">O</div>
+      </div>
       <div class="square" id="0"></div>
       <div class="square" id="1"></div>
       <div class="square" id="2"></div>
@@ -24,8 +30,22 @@
       <div class="square" id="8"></div>
     </div>
     <div class="status"></div>
-    <button class="reset" onclick="gameInit()">reset</button>
+    <button class="reset" onclick="gameInit()">play again</button>
   </div>
+
+  <!-- generic footer -->
+  <footer class="footer">
+    <div>
+      <div class="icons">
+        <a href="https://www.freecodecamp.com/chazmcgrill"><i class="fa fa-free-code-camp" aria-hidden="true"></i></a>
+        <a href="https://twitter.com/charlietdev"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+        <a href="https://github.com/chazmcgrill"><i class="fa fa-github" aria-hidden="true"></i></a>
+        <a href="https://www.linkedin.com/in/charlie-taylor-941434134/"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+        <a href="https://codepen.io/chazmcgrill/"><i class="fa fa-codepen" aria-hidden="true"></i></a>
+      </div>
+      <p>designed and coded by <a href="http://www.charlietaylordev.com">charlie taylor</a></p>
+    </div>
+  </footer>
 
   <!-- scripts -->
   <script src="js/jquery-3.2.1.min.js"></script>

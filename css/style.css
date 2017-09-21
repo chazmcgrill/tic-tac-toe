@@ -7,9 +7,21 @@ html, button {
   font-size: 18px;
   color: #d9e1e8; }
 
+.site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: space-between; }
+
+h1 {
+  color: #282c37; }
+
 .container {
   margin: 70px auto;
   text-align: center; }
+  @media (max-width: 480px) {
+    .container {
+      margin-top: 0; } }
 
 .board-container {
   margin: 20px auto;
@@ -28,15 +40,32 @@ html, button {
   color: #282c37;
   border-radius: 4px; }
 
+.chooser {
+  position: absolute;
+  background: #2b90d9;
+  height: 300px;
+  width: 300px;
+  border-radius: 10px; }
+  .chooser h3 {
+    padding-top: 50px; }
+
+.chooser-button {
+  font-size: 3rem;
+  display: inline-block;
+  margin: 20px 30px; }
+  .chooser-button:hover {
+    color: #282c37; }
+
 .status {
   height: 45px;
   display: block;
   font-size: 1.5em; }
 
-.square, button {
+.square, button, .chooser-button {
   cursor: pointer; }
 
 button {
+  display: none;
   border: 4px solid #d9e1e8;
   background: #9baec8;
   border-radius: 4px;
@@ -45,3 +74,27 @@ button {
   button:hover {
     background: #d9e1e8;
     color: #9baec8; }
+
+.handle {
+  display: none; }
+
+.footer {
+  display: flex;
+  justify-content: space-around;
+  height: 70px;
+  text-align: center; }
+  .footer .icons {
+    width: 150px;
+    margin: 0 auto 10px auto;
+    display: flex;
+    justify-content: space-between; }
+  .footer i {
+    font-size: 90%; }
+  .footer p, .footer i, .footer a {
+    color: #282c37; }
+  .footer p {
+    font-size: 10px; }
+  .footer a {
+    text-decoration: none; }
+  .footer i:hover, .footer a:hover {
+    color: #d9e1e8; }

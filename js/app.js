@@ -1,5 +1,3 @@
-// Requirements
-// You can choose between X and O
 
 // EXTRA FEATURES
 // scoreboard
@@ -20,7 +18,13 @@ const termStates = [
   [2,4,6]
 ];
 
-gameInit();
+/* token chooser function */
+$('.chooser-button').click(function(event) {
+  humanToken = event.target.id;
+  humanToken === 'X' ? aiToken = 'O' : aiToken = 'X';
+  $('.chooser').addClass('handle');
+  gameInit();
+});
 
 /* click events for the squares */
 $('.square').click(function(event) {
@@ -33,6 +37,7 @@ numbers clears cells of text, styling and adds event
 listener */
 function gameInit() {
   board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  $('button').css('display', 'none');
   $('.square').text('');
   gameStatus('');
   gameOver = false;
@@ -58,6 +63,7 @@ function updateBoard(token, index, player) {
   board[index] = token;
   if (winCheck(board, token)) {
     player === 'human' ? gameStatus('You Win!') : gameStatus('You Lose!');
+    $('button').css('display', 'inline-block');
     gameOver = true;
   }
 }
@@ -84,6 +90,7 @@ function winCheck(currentBoard, token) {
 function drawCheck() {
   if (!availableMoves(board).length) {
     gameStatus('It\'s A Draw!');
+    $('button').css('display', 'inline-block');
     return true;
   }
 }
