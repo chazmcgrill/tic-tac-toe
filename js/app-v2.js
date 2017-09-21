@@ -35,7 +35,7 @@ gameInit();
 
 /* click events for the squares */
 $('.square').click(function(event) {
-  turnClick(event.target.id);
+  squareClick(event.target.id);
 });
 
 /* game initiator function removes message display creates
@@ -51,9 +51,12 @@ function gameInit() {
 /* function for cell click events checks if cell is
 vacant if so plays human player move following this it
 takes computer move if game not a tie */
-function turnClick(move) {
+function squareClick(move) {
   if (typeof board[move] === 'number' && !gameOver) {
-    updateBoard(humanToken, move);
+    updateBoard(humanToken, move, 'human');
+    if(!drawCheck() && !gameOver) {
+      updateBoard(aiToken, aiMove(), 'ai');
+    }
   }
   console.log(board);
 }
@@ -61,11 +64,11 @@ function turnClick(move) {
 /* update function adds player token to origBoard array
 and cells on board. It checks if the turn has a winning
 move and if so call the gameOver function */
-function updateBoard(token, index) {
+function updateBoard(token, index, player) {
   $('#' + index).text(token);
   board[index] = token;
-  if (winCheck(board, humanToken)) {
-    gameStatus('You Win!');
+  if (winCheck(board, token)) {
+    player === 'human' ? gameStatus('You Win!') : gameStatus('You Lose!');
     gameOver = true;
   }
 }
@@ -83,19 +86,34 @@ function winCheck(currentBoard, token) {
   }
 }
 
+/* function that checks for draw */
+function drawCheck() {
+  console.log(availableMoves());
+  if (!availableMoves().length) {
+    gameStatus('It\'s A Draw!');
+    return true;
+  }
+}
+
 /* game status function */
 function gameStatus(message) {
   $('.status').text(message);
 }
 
-/* display winner function */
-
-/* function that returns array of empty square available */
+/* function that returns array of available moves */
+function availableMoves() {
+  var arr = [];
+  for(var i = 0; i < board.length; i++) {
+    if (typeof board[i] === 'number') arr.push(board[i]);
+  }
+  return arr;
+}
 
 /* function that returns best move from minimax */
-
-/* function that checks for draw */
-
+function aiMove() {
+  var arr = availableMoves();
+  return arr[0];
+}
 
 /* MINIMAX algorithm
 1. return a value if a terminal state is found (+10, 0, -10)
