@@ -18,19 +18,6 @@ const termStates = [
   [2,4,6]
 ];
 
-/* token chooser function */
-$('.chooser-button').click(function(event) {
-  humanToken = event.target.id;
-  humanToken === 'X' ? aiToken = 'O' : aiToken = 'X';
-  $('.chooser').addClass('handle');
-  gameInit();
-});
-
-/* click events for the squares */
-$('.square').click(function(event) {
-  squareClick(event.target.id);
-});
-
 /* game initiator function removes message display
 creates empty array with 9 elements containing index
 numbers clears cells of text, styling and adds event
@@ -50,7 +37,7 @@ function squareClick(move) {
   if (typeof board[move] === 'number' && !gameOver) {
     updateBoard(humanToken, move, 'human');
     if(!drawCheck() && !gameOver) {
-      updateBoard(aiToken, aiMove(), 'ai');
+      updateBoard(aiToken, minimax(board, aiToken, 1).index, 'ai');
     }
   }
 }
@@ -96,76 +83,92 @@ function drawCheck() {
 }
 
 /* function that returns array of available moves */
-function availableMoves(testBoard) {
+function availableMoves(currentBoard) {
   var arr = [];
-  for(var i = 0; i < testBoard.length; i++) {
-    if (typeof testBoard[i] === 'number') arr.push(testBoard[i]);
+  for(var i = 0; i < currentBoard.length; i++) {
+    if (typeof currentBoard[i] === 'number') arr.push(currentBoard[i]);
   }
   return arr;
 }
 
-/* Ai move function returns best move from minimax */
-function aiMove() {
-  return minimax(board, aiToken).index;
-}
-
 /* Minimax algorithm function for unbeatable ai */
-function minimax(tempBoard, player) {
-  var available = availableMoves(tempBoard);
+function minimax(tempBoard, turn, depth) {
+  var tempAvailSquares = availableMoves(tempBoard),
+      maxValue = -Infinity,
+      minValue = Infinity,
+      movesArray = [],
+      bestSpot;
 
-  /* Base Cases return value if terminal state found */
+  /* Base Cases return value if terminal state found
+  on any of the squares minus number for human turn
+  positive number for ai turn valued highest on lowest
+  depth */
   if (winCheck(tempBoard, humanToken)) {
-    return { score: -10 };
+    return { value: depth - 10 };
   } else if (winCheck(tempBoard, aiToken)) {
-    return { score: 10 };
-  } else if (!available.length) {
-    return { score: 0 };
+    return { value: 10 - depth };
+  } else if (!tempAvailSquares.length) {
+    return { value: 0 };
   }
 
   /* Cycles through available spots on the board.
-  Creates move object and calls minimax function
-  on each square recursively */
-  var moves = [];
+  Creates move object with index and value, calls
+  minimax function on each square recursively and
+  pushes move to movesArray array */
+  for (var i = 0; i < tempAvailSquares.length; i++) {
+    var moveObj = {},
+        returnResult;
 
-  for (var i = 0; i < available.length; i++) {
+    moveObj.index = tempBoard[tempAvailSquares[i]];
+    tempBoard[tempAvailSquares[i]] = turn;
 
-    var move = {};
-    move.index = tempBoard[available[i]];
-    tempBoard[available[i]] = player;
-
-    var result;
-    if (player === aiToken) {
-      result = minimax(tempBoard, humanToken);
-      move.score = result.score;
+    if (turn === aiToken) {
+      returnResult = minimax(tempBoard, humanToken, depth + 1);
+      moveObj.value = returnResult.value;
     } else {
-      result = minimax(tempBoard, aiToken);
-      move.score = result.score;
+      returnResult = minimax(tempBoard, aiToken, depth + 1);
+      moveObj.value = returnResult.value;
     }
 
-    tempBoard[available[i]] = move.index
-    moves.push(move);
+    tempBoard[tempAvailSquares[i]] = moveObj.index;
+    movesArray.push(moveObj);
   }
 
   /* Evaluates returning values from function calls
-  and ends by returning the best score */
-  var bestMove, bestScore;
-  if (player === aiToken) {
-    bestScore = -Infinity;
-    for(var j = 0; j < moves.length; j++) {
-      if (moves[j].score > bestScore) {
-        bestScore = moves[j].score;
-        bestMove = j;
+  and ends by returning the best result */
+  if (turn === aiToken) {
+    for (var j = 0; j < movesArray.length; j++) {
+      if (movesArray[j].value > maxValue) {
+        maxValue = movesArray[j].value;
+        bestSpot = j;
       }
     }
   } else {
-    bestScore = Infinity;
-    for(var k = 0; k < moves.length; k++) {
-      if (moves[k].score < bestScore) {
-        bestScore = moves[k].score;
-        bestMove = k;
+    for (var k = 0; k < movesArray.length; k++) {
+      if (movesArray[k].value < minValue) {
+        minValue = movesArray[k].value;
+        bestSpot = k;
       }
     }
   }
+  return movesArray[bestSpot];
 
-  return moves[bestMove];
 }
+
+/* token chooser click event */
+$('.chooser-button').click(function(event) {
+  humanToken = event.target.id;
+  humanToken === 'X' ? aiToken = 'O' : aiToken = 'X';
+  $('.chooser').addClass('handle');
+  gameInit();
+});
+
+/* squares click events */
+$('.square').click(function(event) {
+  squareClick(event.target.id);
+});
+
+/* reset click event */
+$('.reset').click(function() {
+  gameInit();
+});
