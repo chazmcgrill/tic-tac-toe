@@ -14,10 +14,11 @@ html, button {
   justify-content: space-between; }
 
 h1 {
-  color: #282c37; }
+  color: #282c37;
+  margin-left: 10px; }
 
 .container {
-  margin: 70px auto;
+  margin: 70px auto 25px;
   text-align: center; }
   @media (max-width: 480px) {
     .container {
@@ -70,7 +71,8 @@ button {
   background: #9baec8;
   border-radius: 4px;
   padding: 20px 50px;
-  outline: none; }
+  outline: none;
+  appearance: none; }
   button:hover {
     background: #d9e1e8;
     color: #9baec8; }
