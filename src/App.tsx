@@ -10,13 +10,24 @@ interface GameData {
 }
 
 const getNewGameStatus = (board: Board, currentToken: 'X' | 'O', currentPlayer: 'ai' | 'human') => {
-    const isDraw = drawCheck(board);
-    if (isDraw) return GameState.DRAW;
-
-    const isWin = winCheck(board, currentToken);
-    if (isWin) return currentPlayer === 'human' ? GameState.WIN : GameState.LOSE;
-
+    if (winCheck(board, currentToken)) return currentPlayer === 'human' ? GameState.WIN : GameState.LOSE;
+    if (drawCheck(board)) return GameState.DRAW;
     return currentPlayer === 'human' ? GameState.AI_TURN : GameState.HUMAN_TURN;
+};
+
+interface UpdatedGameDataOptions {
+    currentBoard: Board;
+    currentToken: 'X' | 'O';
+    currentPlayer: 'ai' | 'human';
+    squareIndex: number;
+}
+
+const getUpdatedGameData = ({ currentBoard, currentToken, currentPlayer, squareIndex }: UpdatedGameDataOptions) => {
+    const board = currentBoard.map((square, index) =>
+        squareIndex === index ? { ...square, currentPlayer: currentToken } : square,
+    );
+    const gameStatus = getNewGameStatus(board, currentToken, currentPlayer);
+    return { board, gameStatus };
 };
 
 const App = () => {
@@ -42,36 +53,34 @@ const App = () => {
         gameInit();
     };
 
+    // perform player move
     const handleSquarePress = (event: any) => {
         const squareIndex = parseInt(event.target.id, 10);
         if (gameData.gameStatus === GameState.HUMAN_TURN && gameData.board[squareIndex].currentPlayer === null) {
             setGameData((currentGameData) => {
-                const newBoard = currentGameData.board.map((square, index) =>
-                    squareIndex === index ? { ...square, currentPlayer: humanToken } : square,
-                );
-
-                return {
-                    board: newBoard,
-                    gameStatus: getNewGameStatus(newBoard, humanToken, 'human'),
-                };
+                return getUpdatedGameData({
+                    currentBoard: currentGameData.board,
+                    currentToken: humanToken,
+                    currentPlayer: 'human',
+                    squareIndex,
+                });
             });
         }
     };
 
+    // perform AI move
     useEffect(() => {
         const { board, gameStatus } = gameData;
         if (gameStatus === GameState.AI_TURN) {
             const moves = availableMoves(board);
-            const aiMove = moves[Math.floor(Math.random() * moves.length)];
+            const aiMoveIndex = moves[Math.floor(Math.random() * moves.length)];
             setGameData((currentGameData) => {
-                const newBoard = currentGameData.board.map((square, index) =>
-                    aiMove === index ? { ...square, currentPlayer: aiToken } : square,
-                );
-
-                return {
-                    board: newBoard,
-                    gameStatus: getNewGameStatus(newBoard, aiToken, 'ai'),
-                };
+                return getUpdatedGameData({
+                    currentBoard: currentGameData.board,
+                    currentToken: aiToken,
+                    currentPlayer: 'ai',
+                    squareIndex: aiMoveIndex,
+                });
             });
         }
     }, [aiToken, gameData]);
