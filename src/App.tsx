@@ -2,12 +2,22 @@ import { useEffect, useState } from 'react';
 import Chooser from './Chooser';
 import Footer from './Footer';
 import { Board, GameState } from './types';
-import { generateNewBoard, availableMoves } from './utils';
+import { generateNewBoard, availableMoves, winCheck, drawCheck } from './utils';
 
 interface GameData {
     board: Board;
     gameStatus: GameState;
 }
+
+const getNewGameStatus = (board: Board, currentToken: 'X' | 'O', currentPlayer: 'ai' | 'human') => {
+    const isDraw = drawCheck(board);
+    if (isDraw) return GameState.DRAW;
+
+    const isWin = winCheck(board, currentToken);
+    if (isWin) return currentPlayer === 'human' ? GameState.WIN : GameState.LOSE;
+
+    return currentPlayer === 'human' ? GameState.AI_TURN : GameState.HUMAN_TURN;
+};
 
 const App = () => {
     const [humanToken, setHumanToken] = useState<'X' | 'O'>('X');
@@ -35,12 +45,16 @@ const App = () => {
     const handleSquarePress = (event: any) => {
         const squareIndex = parseInt(event.target.id, 10);
         if (gameData.gameStatus === GameState.HUMAN_TURN && gameData.board[squareIndex].currentPlayer === null) {
-            setGameData((currentGameData) => ({
-                board: currentGameData.board.map((square, index) =>
+            setGameData((currentGameData) => {
+                const newBoard = currentGameData.board.map((square, index) =>
                     squareIndex === index ? { ...square, currentPlayer: humanToken } : square,
-                ),
-                gameStatus: GameState.AI_TURN,
-            }));
+                );
+
+                return {
+                    board: newBoard,
+                    gameStatus: getNewGameStatus(newBoard, humanToken, 'human'),
+                };
+            });
         }
     };
 
@@ -49,12 +63,16 @@ const App = () => {
         if (gameStatus === GameState.AI_TURN) {
             const moves = availableMoves(board);
             const aiMove = moves[Math.floor(Math.random() * moves.length)];
-            setGameData((currentGameData) => ({
-                board: currentGameData.board.map((square, index) =>
+            setGameData((currentGameData) => {
+                const newBoard = currentGameData.board.map((square, index) =>
                     aiMove === index ? { ...square, currentPlayer: aiToken } : square,
-                ),
-                gameStatus: GameState.HUMAN_TURN,
-            }));
+                );
+
+                return {
+                    board: newBoard,
+                    gameStatus: getNewGameStatus(newBoard, aiToken, 'ai'),
+                };
+            });
         }
     }, [aiToken, gameData]);
 
