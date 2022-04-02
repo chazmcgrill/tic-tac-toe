@@ -18,3 +18,20 @@ export enum Player {
     HUMAN,
     AI,
 }
+
+export enum Token {
+    X = 'X',
+    O = 'O',
+}
+
+export interface GameData {
+    board: Board;
+    gameStatus: GameState;
+}
+
+export interface UpdatedGameDataOptions {
+    currentBoard: Board;
+    currentToken: Token;
+    currentPlayer: Player;
+    squareIndex: number;
+}
