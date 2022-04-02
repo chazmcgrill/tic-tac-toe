@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Chooser from './Chooser';
 import Footer from './Footer';
-import { Board, GameState } from './types';
+import { Board, GameState, Player } from './types';
 import { generateNewBoard, availableMoves, winCheck, drawCheck } from './utils';
 
 interface GameData {
@@ -9,16 +9,16 @@ interface GameData {
     gameStatus: GameState;
 }
 
-const getNewGameStatus = (board: Board, currentToken: 'X' | 'O', currentPlayer: 'ai' | 'human') => {
-    if (winCheck(board, currentToken)) return currentPlayer === 'human' ? GameState.WIN : GameState.LOSE;
+const getNewGameStatus = (board: Board, currentToken: 'X' | 'O', currentPlayer: Player) => {
+    if (winCheck(board, currentToken)) return currentPlayer === Player.HUMAN ? GameState.WIN : GameState.LOSE;
     if (drawCheck(board)) return GameState.DRAW;
-    return currentPlayer === 'human' ? GameState.AI_TURN : GameState.HUMAN_TURN;
+    return currentPlayer === Player.HUMAN ? GameState.AI_TURN : GameState.HUMAN_TURN;
 };
 
 interface UpdatedGameDataOptions {
     currentBoard: Board;
     currentToken: 'X' | 'O';
-    currentPlayer: 'ai' | 'human';
+    currentPlayer: Player;
     squareIndex: number;
 }
 
@@ -61,7 +61,7 @@ const App = () => {
                 return getUpdatedGameData({
                     currentBoard: currentGameData.board,
                     currentToken: humanToken,
-                    currentPlayer: 'human',
+                    currentPlayer: Player.HUMAN,
                     squareIndex,
                 });
             });
@@ -78,7 +78,7 @@ const App = () => {
                 return getUpdatedGameData({
                     currentBoard: currentGameData.board,
                     currentToken: aiToken,
-                    currentPlayer: 'ai',
+                    currentPlayer: Player.AI,
                     squareIndex: aiMoveIndex,
                 });
             });

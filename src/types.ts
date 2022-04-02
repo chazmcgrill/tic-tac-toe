@@ -13,3 +13,8 @@ export enum GameState {
     WIN,
     LOSE,
 }
+
+export enum Player {
+    HUMAN,
+    AI,
+}
