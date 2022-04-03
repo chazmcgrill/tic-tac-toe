@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
+import { AI } from './AI';
 import Chooser from './Chooser';
 import Footer from './Footer';
 import { GameData, GameState, Player, Token } from './types';
-import { generateNewBoard, getUpdatedGameData, minimax } from './utils';
+import { generateNewBoard, getUpdatedGameData } from './utils';
 
 const App = () => {
     const [humanToken, setHumanToken] = useState<Token>(Token.X);
@@ -46,13 +47,13 @@ const App = () => {
     useEffect(() => {
         const { board, gameStatus } = gameData;
         if (gameStatus === GameState.AI_TURN) {
-            const aiMove = minimax(board, aiToken, 0, aiToken);
+            const aiInstance = new AI(board, aiToken);
             setGameData((currentGameData) => {
                 return getUpdatedGameData({
                     currentBoard: currentGameData.board,
                     currentToken: aiToken,
                     currentPlayer: Player.AI,
-                    squareIndex: aiMove.index,
+                    squareIndex: aiInstance.getMove(),
                 });
             });
         }

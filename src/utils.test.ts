@@ -1,5 +1,5 @@
 import { Token } from './types';
-import { availableMoves, drawCheck, generateNewBoard, minimax, winCheck } from './utils';
+import { availableMoves, drawCheck, generateNewBoard, winCheck } from './utils';
 
 const DUMMY_BOARD = [Token.X, Token.X, Token.O, Token.O, 4, Token.O, 6, 7, 8];
 const DUMMY_WIN_BOARD = [Token.X, Token.X, Token.X, Token.O, 4, Token.O, 6, 7, 8];
@@ -38,23 +38,6 @@ describe('drawCheck util', () => {
 
     it('should return false if no draw is found', () => {
         expect(drawCheck(DUMMY_BOARD)).toBe(false);
-    });
-});
-
-describe('minimax util', () => {
-    it('should prevent opponent from winning next move', () => {
-        expect(minimax(DUMMY_BOARD, Token.X, 0, Token.X)).toEqual({ index: 4, value: -8 });
-    });
-
-    it('should win when possible', () => {
-        const WIN_NEXT_MOVE_BOARD = [Token.X, Token.X, Token.O, Token.O, Token.X, Token.O, 6, 7, 8];
-        expect(minimax(WIN_NEXT_MOVE_BOARD, Token.X, 0, Token.X)).toEqual({ index: 7, value: 9 });
-    });
-
-    it('should not mutate the original board', () => {
-        const boardCopy = Array.from(DUMMY_BOARD);
-        minimax(DUMMY_BOARD, Token.X, 0, Token.X);
-        expect(DUMMY_BOARD).toEqual(boardCopy);
     });
 });
 
