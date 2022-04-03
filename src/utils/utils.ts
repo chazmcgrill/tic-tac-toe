@@ -1,4 +1,4 @@
-import { Board, GameState, Player, Token, UpdatedGameDataOptions } from './types';
+import { Board, GameState, Player, Token, UpdatedGameDataOptions } from '../types';
 
 const TERMINAL_STATES = [
     [0, 1, 2],

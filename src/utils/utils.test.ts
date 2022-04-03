@@ -1,4 +1,4 @@
-import { Token } from './types';
+import { Token } from '../types';
 import { availableMoves, drawCheck, generateNewBoard, winCheck } from './utils';
 
 const DUMMY_BOARD = [Token.X, Token.X, Token.O, Token.O, 4, Token.O, 6, 7, 8];

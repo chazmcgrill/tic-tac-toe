@@ -1,4 +1,4 @@
-import { Board, Token } from './types';
+import { Board, Token } from '../types';
 import { availableMoves, drawCheck, winCheck } from './utils';
 
 interface MoveObject {

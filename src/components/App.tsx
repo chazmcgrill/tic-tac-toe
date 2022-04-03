@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { AI } from './AI';
+import { GameData, GameState, Player, Token } from '../types';
+import { generateNewBoard, getUpdatedGameData } from '../utils/utils';
+import { AI } from '../utils/AI';
 import Chooser from './Chooser';
 import Footer from './Footer';
 import GameStatusText from './GameStatusText';
-import { GameData, GameState, Player, Token } from './types';
-import { generateNewBoard, getUpdatedGameData } from './utils';
 
 const AI_PLAYER_THINKING_TIME = 500;
 

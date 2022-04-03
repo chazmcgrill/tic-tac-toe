@@ -1,4 +1,4 @@
-import { Token } from './types';
+import { Token } from '../types';
 
 interface ChooserProps {
     onChooserClick: (event: any) => void;

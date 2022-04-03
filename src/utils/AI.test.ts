@@ -1,5 +1,5 @@
 import { AI } from './AI';
-import { Token } from './types';
+import { Token } from '../types';
 
 const DUMMY_BOARD = [Token.X, Token.X, Token.O, Token.O, 4, Token.O, 6, 7, 8];
 const WIN_NEXT_MOVE_BOARD = [Token.X, Token.X, Token.O, Token.O, Token.X, Token.O, 6, 7, 8];
