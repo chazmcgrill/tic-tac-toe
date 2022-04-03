@@ -8,70 +8,71 @@ interface MoveObject {
 
 export class AI {
     private board;
-    private token;
+    private aiToken;
+    private humanToken;
 
-    constructor(board: Board, token: Token) {
+    constructor(board: Board, aiToken: Token) {
         this.board = board.slice();
-        this.token = token;
+        this.aiToken = aiToken;
+        this.humanToken = aiToken === Token.X ? Token.O : Token.X;
     }
 
     getMove() {
-        const { board, token } = this;
-        const aiMove = this.minimax(board, token, 0, token);
-        return aiMove?.index;
+        const { board, aiToken } = this;
+        const { index } = this.minimax(board, aiToken, 0);
+        return index;
     }
 
     /* Minimax algorithm function for unbeatable ai */
-    private minimax(tempBoard: Board, turn: Token, depth: number, aiToken: Token): MoveObject {
-        const humanToken = aiToken === Token.X ? Token.O : Token.X;
+    private minimax(tempBoard: Board, turn: Token, depth: number): MoveObject {
         const availableSquareIndexes = availableMoves(tempBoard);
         const movesArray: MoveObject[] = [];
         let maxValue = -Infinity;
         let minValue = Infinity;
-        let bestSpot = -1;
+        let bestIndex = -1;
 
-        if (winCheck(tempBoard, humanToken)) {
-            return { index: -1, value: depth - 10 };
-        } else if (winCheck(tempBoard, aiToken)) {
-            return { index: -1, value: 10 - depth };
+        if (winCheck(tempBoard, this.humanToken)) {
+            return { index: bestIndex, value: depth - 10 };
+        } else if (winCheck(tempBoard, this.aiToken)) {
+            return { index: bestIndex, value: 10 - depth };
         } else if (!availableSquareIndexes.length) {
-            return { index: -1, value: 0 };
+            return { index: bestIndex, value: 0 };
         }
 
-        availableSquareIndexes.forEach((squareIndex) => {
-            const moveObj = { index: squareIndex, value: 0 };
+        availableSquareIndexes.forEach((availableSquareIndex) => {
+            const moveObj = { index: availableSquareIndex, value: 0 };
             let returnResult;
 
-            tempBoard[squareIndex] = turn;
+            tempBoard[availableSquareIndex] = turn;
 
-            if (turn === aiToken) {
-                returnResult = this.minimax(tempBoard, humanToken, depth + 1, aiToken);
+            if (turn === this.aiToken) {
+                returnResult = this.minimax(tempBoard, this.humanToken, depth + 1);
                 moveObj.value = returnResult.value;
             } else {
-                returnResult = this.minimax(tempBoard, aiToken, depth + 1, aiToken);
+                returnResult = this.minimax(tempBoard, this.aiToken, depth + 1);
                 moveObj.value = returnResult.value;
             }
 
-            tempBoard[squareIndex] = moveObj.index;
+            tempBoard[availableSquareIndex] = moveObj.index;
             movesArray.push(moveObj);
         });
 
-        if (turn === aiToken) {
+        if (turn === this.aiToken) {
             movesArray.forEach((move, index) => {
                 if (move.value > maxValue) {
                     maxValue = move.value;
-                    bestSpot = index;
+                    bestIndex = index;
                 }
             });
         } else {
             movesArray.forEach((move, index) => {
                 if (move.value < minValue) {
                     minValue = move.value;
-                    bestSpot = index;
+                    bestIndex = index;
                 }
             });
         }
 
-        return movesArray[bestSpot];
+        return movesArray[bestIndex];
     }
 }
