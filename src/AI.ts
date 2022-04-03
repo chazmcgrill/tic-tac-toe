@@ -38,11 +38,11 @@ export class AI {
             return { index: -1, value: 0 };
         }
 
-        for (let i = 0; i < availableSquareIndexes.length; i++) {
-            const moveObj = { index: availableSquareIndexes[i], value: 0 };
+        availableSquareIndexes.forEach((squareIndex) => {
+            const moveObj = { index: squareIndex, value: 0 };
             let returnResult;
 
-            tempBoard[availableSquareIndexes[i]] = turn;
+            tempBoard[squareIndex] = turn;
 
             if (turn === aiToken) {
                 returnResult = this.minimax(tempBoard, humanToken, depth + 1, aiToken);
@@ -52,24 +52,24 @@ export class AI {
                 moveObj.value = returnResult.value;
             }
 
-            tempBoard[availableSquareIndexes[i]] = moveObj.index;
+            tempBoard[squareIndex] = moveObj.index;
             movesArray.push(moveObj);
-        }
+        });
 
         if (turn === aiToken) {
-            for (let j = 0; j < movesArray.length; j++) {
-                if (movesArray[j].value > maxValue) {
-                    maxValue = movesArray[j].value;
-                    bestSpot = j;
+            movesArray.forEach((move, index) => {
+                if (move.value > maxValue) {
+                    maxValue = move.value;
+                    bestSpot = index;
                 }
-            }
+            });
         } else {
-            for (let k = 0; k < movesArray.length; k++) {
-                if (movesArray[k].value < minValue) {
-                    minValue = movesArray[k].value;
-                    bestSpot = k;
+            movesArray.forEach((move, index) => {
+                if (move.value < minValue) {
+                    minValue = move.value;
+                    bestSpot = index;
                 }
-            }
+            });
         }
 
         return movesArray[bestSpot];
