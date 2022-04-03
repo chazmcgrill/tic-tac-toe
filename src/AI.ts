@@ -11,6 +11,11 @@ export class AI {
     private aiToken;
     private humanToken;
 
+    /**
+     * AI class which uses the minimax algorithm to determine the best move for the AI player
+     * @param board the current board state
+     * @param aiToken the token for the AI player
+     */
     constructor(board: Board, aiToken: Token) {
         this.board = board.slice();
         this.aiToken = aiToken;

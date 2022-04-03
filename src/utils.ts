@@ -11,37 +11,39 @@ const TERMINAL_STATES = [
     [2, 4, 6],
 ];
 
+/** Check if the given player has won the game */
 export function winCheck(currentBoard: Board, token: Token): boolean {
-    for (var i = 0; i < 8; i++) {
-        for (var j = 0; j < 3; j++) {
-            if (currentBoard[TERMINAL_STATES[i][j]] === token) {
-                if (j === 2) return true;
-            } else {
-                break;
-            }
-        }
-    }
-    return false;
+    let winStatus = false;
+    TERMINAL_STATES.forEach((terminalState) => {
+        const isWin = terminalState.every((index) => currentBoard[index] === token);
+        if (isWin) winStatus = true;
+    });
+    return winStatus;
 }
 
+/** Get the available square indexes on the current board */
 export function availableMoves(currentBoard: Board) {
     return currentBoard.filter((boardItem) => typeof boardItem === 'number') as number[];
 }
 
+/** Check if game is a draw */
 export function drawCheck(currentBoard: Board) {
     return availableMoves(currentBoard).length === 0;
 }
 
+/** Creates a new game board */
 export function generateNewBoard(): Board {
     return Array.from({ length: 9 }, (_, index) => index);
 }
 
+/** Gets the new game status at the end of a turn */
 const getNewGameStatus = (board: Board, currentToken: Token, currentPlayer: Player) => {
     if (winCheck(board, currentToken)) return currentPlayer === Player.HUMAN ? GameState.WIN : GameState.LOSE;
     if (drawCheck(board)) return GameState.DRAW;
     return currentPlayer === Player.HUMAN ? GameState.AI_TURN : GameState.HUMAN_TURN;
 };
 
+/** Formats the game data following a turn */
 export const getUpdatedGameData = ({
     currentBoard,
     currentToken,
