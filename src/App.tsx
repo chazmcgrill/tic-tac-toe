@@ -43,17 +43,17 @@ const App = () => {
         }
     };
 
-    // perform AI move
     useEffect(() => {
         const { board, gameStatus } = gameData;
         if (gameStatus === GameState.AI_TURN) {
+            // perform AI move
             const aiInstance = new AI(board, aiToken);
             setGameData((currentGameData) => {
                 return getUpdatedGameData({
                     currentBoard: currentGameData.board,
                     currentToken: aiToken,
                     currentPlayer: Player.AI,
-                    squareIndex: aiInstance.getMove(),
+                    squareIndex: aiInstance.getMoveIndex(),
                 });
             });
         }

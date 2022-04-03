@@ -7,18 +7,18 @@ const WIN_NEXT_MOVE_BOARD = [Token.X, Token.X, Token.O, Token.O, Token.X, Token.
 describe('getMove (minimax)', () => {
     it('should prevent opponent from winning next move', () => {
         const aiInstance = new AI(DUMMY_BOARD, Token.X);
-        expect(aiInstance.getMove()).toEqual(4);
+        expect(aiInstance.getMoveIndex()).toEqual(4);
     });
 
     it('should win when possible', () => {
         const aiInstance = new AI(WIN_NEXT_MOVE_BOARD, Token.X);
-        expect(aiInstance.getMove()).toEqual(7);
+        expect(aiInstance.getMoveIndex()).toEqual(7);
     });
 
     it('should not mutate the original board', () => {
         const boardCopy = Array.from(DUMMY_BOARD);
         const aiInstance = new AI(DUMMY_BOARD, Token.X);
-        aiInstance.getMove();
+        aiInstance.getMoveIndex();
         expect(DUMMY_BOARD).toEqual(boardCopy);
     });
 });
