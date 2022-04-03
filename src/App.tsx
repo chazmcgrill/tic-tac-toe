@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { AI } from './AI';
 import Chooser from './Chooser';
 import Footer from './Footer';
+import GameStatusText from './GameStatusText';
 import { GameData, GameState, Player, Token } from './types';
 import { generateNewBoard, getUpdatedGameData } from './utils';
+
+const AI_PLAYER_THINKING_TIME = 500;
 
 const App = () => {
     const [humanToken, setHumanToken] = useState<Token>(Token.X);
@@ -47,15 +50,17 @@ const App = () => {
         const { board, gameStatus } = gameData;
         if (gameStatus === GameState.AI_TURN) {
             // perform AI move
-            const aiInstance = new AI(board, aiToken);
-            setGameData((currentGameData) => {
-                return getUpdatedGameData({
-                    currentBoard: currentGameData.board,
-                    currentToken: aiToken,
-                    currentPlayer: Player.AI,
-                    squareIndex: aiInstance.getMoveIndex(),
+            setTimeout(() => {
+                const aiInstance = new AI(board, aiToken);
+                setGameData((currentGameData) => {
+                    return getUpdatedGameData({
+                        currentBoard: currentGameData.board,
+                        currentToken: aiToken,
+                        currentPlayer: Player.AI,
+                        squareIndex: aiInstance.getMoveIndex(),
+                    });
                 });
-            });
+            }, AI_PLAYER_THINKING_TIME);
         }
     }, [aiToken, gameData]);
 
@@ -76,7 +81,7 @@ const App = () => {
                         </>
                     )}
                 </div>
-                <div className="status">{gameStatus}</div>
+                <GameStatusText gameState={gameStatus} />
                 <button className="reset" onClick={gameInit}>
                     play again
                 </button>
