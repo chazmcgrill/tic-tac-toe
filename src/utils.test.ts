@@ -1,48 +1,17 @@
+import { Token } from './types';
 import { availableMoves, drawCheck, generateNewBoard, minimax, winCheck } from './utils';
 
-const DUMMY_BOARD = [
-    { id: 0, currentPlayer: 'X' },
-    { id: 1, currentPlayer: 'X' },
-    { id: 2, currentPlayer: 'O' },
-    { id: 3, currentPlayer: 'O' },
-    { id: 4, currentPlayer: null },
-    { id: 5, currentPlayer: 'O' },
-    { id: 6, currentPlayer: null },
-    { id: 7, currentPlayer: null },
-    { id: 8, currentPlayer: null },
-];
-
-const DUMMY_WIN_BOARD = [
-    { id: 0, currentPlayer: 'X' },
-    { id: 1, currentPlayer: 'X' },
-    { id: 2, currentPlayer: 'X' },
-    { id: 3, currentPlayer: 'O' },
-    { id: 4, currentPlayer: null },
-    { id: 5, currentPlayer: 'O' },
-    { id: 6, currentPlayer: null },
-    { id: 7, currentPlayer: null },
-    { id: 8, currentPlayer: null },
-];
-
-const DUMMY_DRAW_BOARD = [
-    { id: 0, currentPlayer: 'X' },
-    { id: 1, currentPlayer: 'X' },
-    { id: 2, currentPlayer: 'O' },
-    { id: 3, currentPlayer: 'O' },
-    { id: 4, currentPlayer: 'O' },
-    { id: 5, currentPlayer: 'O' },
-    { id: 6, currentPlayer: 'X' },
-    { id: 7, currentPlayer: 'X' },
-    { id: 8, currentPlayer: 'X' },
-];
+const DUMMY_BOARD = [Token.X, Token.X, Token.O, Token.O, 4, Token.O, 6, 7, 8];
+const DUMMY_WIN_BOARD = [Token.X, Token.X, Token.X, Token.O, 4, Token.O, 6, 7, 8];
+const DUMMY_DRAW_BOARD = [Token.X, Token.X, Token.O, Token.O, Token.O, Token.O, Token.X, Token.X, Token.X];
 
 describe('winCheck util', () => {
     it('should return true if a win is found', () => {
-        expect(winCheck(DUMMY_WIN_BOARD, 'X')).toBe(true);
+        expect(winCheck(DUMMY_WIN_BOARD, Token.X)).toBe(true);
     });
 
     it('should return false if no win is found', () => {
-        expect(winCheck(DUMMY_BOARD, 'X')).toBe(false);
+        expect(winCheck(DUMMY_BOARD, Token.X)).toBe(false);
     });
 });
 
@@ -73,29 +42,24 @@ describe('drawCheck util', () => {
 });
 
 describe('minimax util', () => {
-    it('should return the higest value index', () => {
-        expect(minimax(DUMMY_BOARD, 'X', 0)).toEqual({ index: 6, value: 9 });
+    it('should prevent opponent from winning next move', () => {
+        expect(minimax(DUMMY_BOARD, Token.X, 0, Token.X)).toEqual({ index: 4, value: -8 });
+    });
+
+    it('should win when possible', () => {
+        const WIN_NEXT_MOVE_BOARD = [Token.X, Token.X, Token.O, Token.O, Token.X, Token.O, 6, 7, 8];
+        expect(minimax(WIN_NEXT_MOVE_BOARD, Token.X, 0, Token.X)).toEqual({ index: 7, value: 9 });
     });
 
     it('should not mutate the original board', () => {
         const boardCopy = Array.from(DUMMY_BOARD);
-        minimax(DUMMY_BOARD, 'X', 0);
+        minimax(DUMMY_BOARD, Token.X, 0, Token.X);
         expect(DUMMY_BOARD).toEqual(boardCopy);
     });
 });
 
 describe('generateNewBoard util', () => {
     it('should return a new board', () => {
-        expect(generateNewBoard()).toEqual([
-            { id: 0, currentPlayer: null },
-            { id: 1, currentPlayer: null },
-            { id: 2, currentPlayer: null },
-            { id: 3, currentPlayer: null },
-            { id: 4, currentPlayer: null },
-            { id: 5, currentPlayer: null },
-            { id: 6, currentPlayer: null },
-            { id: 7, currentPlayer: null },
-            { id: 8, currentPlayer: null },
-        ]);
+        expect(generateNewBoard()).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
     });
 });

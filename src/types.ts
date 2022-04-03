@@ -1,7 +1,4 @@
-export interface BoardItem {
-    id: number;
-    currentPlayer: string | null;
-}
+type BoardItem = Token | number;
 
 export type Board = BoardItem[];
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Chooser from './Chooser';
 import Footer from './Footer';
 import { GameData, GameState, Player, Token } from './types';
-import { generateNewBoard, availableMoves, getUpdatedGameData } from './utils';
+import { generateNewBoard, getUpdatedGameData, minimax } from './utils';
 
 const App = () => {
     const [humanToken, setHumanToken] = useState<Token>(Token.X);
@@ -29,7 +29,7 @@ const App = () => {
 
     const handleSquarePress = (event: any) => {
         const squareIndex = parseInt(event.target.id, 10);
-        if (gameData.gameStatus === GameState.HUMAN_TURN && gameData.board[squareIndex].currentPlayer === null) {
+        if (gameData.gameStatus === GameState.HUMAN_TURN && typeof gameData.board[squareIndex] === 'number') {
             // perform player move
             setGameData((currentGameData) => {
                 return getUpdatedGameData({
@@ -46,14 +46,13 @@ const App = () => {
     useEffect(() => {
         const { board, gameStatus } = gameData;
         if (gameStatus === GameState.AI_TURN) {
-            const moves = availableMoves(board);
-            const aiMoveIndex = moves[Math.floor(Math.random() * moves.length)];
+            const aiMove = minimax(board, aiToken, 0, aiToken);
             setGameData((currentGameData) => {
                 return getUpdatedGameData({
                     currentBoard: currentGameData.board,
                     currentToken: aiToken,
                     currentPlayer: Player.AI,
-                    squareIndex: aiMoveIndex,
+                    squareIndex: aiMove.index,
                 });
             });
         }
@@ -68,9 +67,9 @@ const App = () => {
                         <Chooser onChooserClick={handleChooserClick} />
                     ) : (
                         <>
-                            {board.map(({ id, currentPlayer }, index) => (
-                                <div className="square" key={id} id={index.toString()} onClick={handleSquarePress}>
-                                    {currentPlayer || ''}
+                            {board.map((currentToken, index) => (
+                                <div className="square" key={`${index}`} id={`${index}`} onClick={handleSquarePress}>
+                                    {typeof currentToken !== 'number' ? currentToken : ''}
                                 </div>
                             ))}
                         </>
